@@ -5,21 +5,22 @@ class Solution(object):
         :type B: List[List[int]]
         :rtype: List[List[int]]
         """
-        if not A:
-            return [[]]
-        aRow = len(A)
-        aCol = len(A[0])
-        bCol = len(B[0])
-        res = [[0 for i in range(bCol)] for j in range(aRow)]
-        bMap = {}
-        for row in range(aCol):
-            bMap[row] = {}
-            for col in range(bCol):
+        bmap = collections.defaultdict(list)
+        arow = len(A)
+        acol = len(A[0])
+        bcol = len(B[0])
+        brow = len(B)
+        res = [[0 for _ in range(bcol)] for _ in range(arow)]
+        for row in range(brow):
+            for col in range(bcol):
                 if B[row][col]:
-                    bMap[row][col] = B[row][col]
-        for arow in range(aRow):
-            for acol in range(aCol):
-                if A[arow][acol]:
-                    for bcol in  bMap[acol]:
-                        res[arow][bcol] += A[arow][acol] * bMap[acol][bcol]
+                    bmap[row].append(col)
+        for ar in range(arow):
+            for ac in range(acol):
+                if A[ar][ac] and bmap[ac]:
+                    for bc in bmap[ac]:
+                        print(A[ar][ac])
+                        print(B[ac][bc])
+                        print(A[ar][ac] * B[ac][bc])
+                        res[ar][bc] += A[ar][ac] * B[ac][bc]
         return res
