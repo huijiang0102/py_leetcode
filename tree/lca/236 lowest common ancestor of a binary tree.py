@@ -10,7 +10,9 @@
 #         self.left = None
 #         self.right = None
 
+
 class Solution(object):
+
     def lowestCommonAncestor(self, root, p, q):
         """
         :type root: TreeNode
@@ -20,10 +22,13 @@ class Solution(object):
         """
         if not root:
             return None
+
         if root.val == p.val or root.val == q.val:
             return root
-        left = self.lowestCommonAncestor(root.left,p,q)
-        right =self.lowestCommonAncestor(root.right,p,q)
+
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
         if left and right:
             return root
         if not left and not right:
