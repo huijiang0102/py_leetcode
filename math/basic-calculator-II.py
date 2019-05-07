@@ -1,61 +1,35 @@
-class Solution:
+class Solution(object):
+
     def calculate(self, s):
         """
         :type s: str
         :rtype: int
         """
-        operator = {"+": 2, "-": 2,
-                    "*": 1, "/": 1}
+        if len(s) == 0:
+            return 0
 
-        def validate_input(s):
-            if not s:
-                return -1
-            j = 0
-            ret = []
-            for i, e in enumerate(s):
-                if e in operator:
-                    ret.append(s[j:i])
-                    ret.append(e)
-                    j = i+1
-            ret.append(s[j:])
-            return ret
+        stack = list()
+        operator = "+"
+        num = 0
 
-        s = validate_input(s)
-        stack_ope = []
-        stack_ele = []
+        for i, e in enumerate(s):
+            if e.isdigit():
+                num *= 10
+                num += ord(e) - ord("0")
+            if (not e.isdigit() and not e.isspace()) or i == len(s) - 1:
+                if operator == "+":
+                    stack.append(num)
+                elif operator == "-":
+                    stack.append(-num)
+                elif operator == "*":
+                    stack.append(stack.pop() * num)
+                elif operator == "/":
+                    tmp = stack.pop()
+                    if tmp//num < 0 and tmp%num != 0:
+                        stack.append(tmp//num+1)
+                    else:
+                        stack.append(tmp//num)
 
-        def helper(stack_ele):
-            op = stack_ope.pop()
-            num_2 = int(stack_ele.pop())
-            num_1 = int(stack_ele.pop())
-            if op is '*':
-                stack_ele.append(num_1*num_2)
-            elif op is '/':
-                stack_ele.append(num_1//num_2)
-            elif op is '+':
-                stack_ele.append(num_1+num_2)
-            elif op is '-':
-                stack_ele.append(num_1-num_2)
-
-        for e in s:
-            if e in operator:
-                if not stack_ope:
-                    stack_ope.append(e)
-                else:
-                    while stack_ope and operator.get(stack_ope[-1]) <= operator.get(e):
-                        helper(stack_ele)
-                    stack_ope.append(e)
-            else:
-                stack_ele.append(e)
-
-        while stack_ope:
-            helper(stack_ele)
-
-        if len(stack_ele) == 1 and not stack_ope:
-            return int(stack_ele.pop())
-        else:
-            return -1
-
-
-s = "3+4*3"
-print(eval(s))
+                operator = e
+                num = 0
+        return sum(stack)

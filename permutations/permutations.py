@@ -1,35 +1,59 @@
+# sol-1 dfs
 class Solution(object):
-    def __init__(self):
-        self.ret = []
 
     def permute(self, nums):
         """
         :type nums: List[int]
         :rtype: List[List[int]]
         """
-        if len(nums) <= 0:
-            return self.ret
+        ret = list()
 
-        marked = [False for _ in range(len(nums))]
-        curr = []
-        self.back_tracking(curr, nums, marked)
-        return self.ret
+        def helper(stack, nums):
+            nonlocal ret
+            if len(stack) == len(nums):
+                ret.append(stack[:])
 
-    def back_tracking(self, curr, nums, marked):
-        if len(curr) == len(nums):
-            self.ret.append(curr[:])
-            return
-        elif len(curr) > len(nums):
-            return
-        for i, num in enumerate(nums):
-            if marked[i] is False:
-                marked[i] = True
-                curr.append(num)
-                self.back_tracking(curr, nums, marked)
-                marked[i] = False
-                curr.pop()
+            for num in nums:
+                if num not in stack:
+                    stack.append(num)
+                    helper(stack, nums)
+                    stack.pop()
 
-s = Solution()
-nums = [1,2,3]
-print(s.permute(nums))
+        stack = list()
+        ret = list()
+        helper(stack, nums)
+        return ret
 
+
+# sol-2 leverage next permutation
+class Solution(object):
+
+    def permute(self, nums):
+
+        def nextPermutation(nums):
+
+            i = len(nums) - 1
+            j = 0
+
+            while i > 0:
+                if nums[i - 1] < nums[i]:
+                    j = i - 1
+                    break
+                i -= 1
+
+            for i in range(len(nums) - 1, j, -1):
+                if nums[i] > nums[j]:
+                    break
+
+            nums[i], nums[j] = nums[j], nums[i]
+            nums[j + 1:] = sorted(nums[j + 1:])
+            return nums
+
+        output = list()
+        nums.sort()
+        val = nums
+        while val not in output:
+            # deep copy of val
+            output.append(val[:])
+            val = nextPermutation(val)
+        return output
